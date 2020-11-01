@@ -1,7 +1,7 @@
 # tracking_e_reconhecimento_de_placa_de_carro
-    Reconhecimento de placa de carro
+   Reconhecimento de placa de carro
 
-    ## Etapas do script:
+   ## Etapas do script:
 1-Seleciona a área da imagem que será enviada para o YOLO detectar a placa;
 
 2-Selecionada a área que será sensível ao movimento; 
