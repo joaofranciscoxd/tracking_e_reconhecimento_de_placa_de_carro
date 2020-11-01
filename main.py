@@ -75,9 +75,9 @@ def cria_trackbars():
     cv2.createTrackbar("y_begin", "Trackbars", 155, 768 + 900, nothing)
     cv2.createTrackbar("x_end", "Trackbars", 1295, 1366 + 1440, nothing)
     cv2.createTrackbar("y_end", "Trackbars", 704, 768 + 900, nothing)
-    cv2.createTrackbar("x_b_captura", "Trackbars1", 503, 1366 + 1440, nothing)
+    cv2.createTrackbar("x_b_captura", "Trackbars1", 735, 1366 + 1440, nothing)
     cv2.createTrackbar("y_b_captura", "Trackbars1", 253, 768 + 900, nothing)
-    cv2.createTrackbar("x_e_captura", "Trackbars1", 561, 1366 + 1440, nothing)
+    cv2.createTrackbar("x_e_captura", "Trackbars1", 135, 1366 + 1440, nothing)
     cv2.createTrackbar("y_e_captura", "Trackbars1", 276, 768 + 900, nothing)
 
     cv2.namedWindow("TrackbarsHSV")
@@ -162,7 +162,7 @@ if __name__ == '__main__':
                     rect = cv2.minAreaRect(cnt)
                     box = cv2.boxPoints(rect)
                     box = np.int0(box)
-                    cv2.drawContours(Cropped, [box], 0, (0, 0, 255), 1)
+                    #cv2.drawContours(Cropped, [box], 0, (0, 0, 255), 1)
                 primeiro = box[2][0]
                 segundo = box[2][1]
                 terceiro = box[3][0]
@@ -185,25 +185,27 @@ if __name__ == '__main__':
                 Cropped_perspectiva = cv2.warpPerspective(Cropped, matrix, (largura_license_plate, altura_license_plate))
                 Cropped_perspectiva = cv2.resize(Cropped_perspectiva, None, fx=1, fy=1, interpolation=cv2.INTER_CUBIC)
                 Cropped_perspectiva_Gray = cv2.cvtColor(Cropped_perspectiva, cv2.COLOR_RGB2GRAY)
-                Cropped_perspectiva_Gray_rotacao = rotate_image(Cropped_perspectiva_Gray, 6)
-                (thresh, Cropped_perspectiva_Gray_rotacao_bin) = cv2.threshold(Cropped_perspectiva_Gray_rotacao, 55, 255, cv2.THRESH_BINARY)
-                Cropped_perspectiva_Gray_rotacao_bin = Cropped_perspectiva_Gray_rotacao_bin[
-                                                       14:Cropped_perspectiva_Gray_rotacao_bin.shape[0] - 13,
-                                                       4:Cropped_perspectiva_Gray_rotacao_bin.shape[1] - 7]
+
+                (thresh, Cropped_perspectiva_Gray_bin) = cv2.threshold(Cropped_perspectiva_Gray, 55, 255, cv2.THRESH_BINARY)
+                Cropped_perspectiva_Gray_bin = Cropped_perspectiva_Gray_bin[
+                                                       21:Cropped_perspectiva_Gray_bin.shape[0] ,
+                                                       8:Cropped_perspectiva_Gray_bin.shape[1] ]
+                Cropped_perspectiva_Gray_bin_rotacao = rotate_image(Cropped_perspectiva_Gray_bin, 3)
                 #kernel = np.ones((4, 4), np.uint8)
                 #result = cv2.erode(result, kernel, iterations=1)
                 #result = cv2.morphologyEx(result, cv2.MORPH_CLOSE, kernel=kernel)
                 #result = ~result
                 #result = cv2.morphologyEx(result,cv2.MORPH_OPEN,kernel=kernel)
-                cv2.imshow("Antes", cv2.resize(Cropped_perspectiva_Gray_rotacao, None, fx=1, fy=1, interpolation=cv2.INTER_CUBIC))
-                cv2.imshow("Depois", cv2.resize(Cropped_perspectiva_Gray_rotacao_bin, None, fx=1, fy=1, interpolation=cv2.INTER_CUBIC))
-                cv2.imwrite("./fotos/placas/placa______{}.jpg".format(numero_imagem), Cropped_perspectiva_Gray_rotacao_bin)
-                cv2.moveWindow("Antes", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) - 51)
-                cv2.moveWindow("Depois", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) +55+((Cropped_perspectiva_Gray_rotacao.shape)[0]))
+                #cv2.imshow("Antes", cv2.resize(Cropped_perspectiva, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC))
+                Cropped_perspectiva_Gray_bin_rotacao = cv2.resize(Cropped_perspectiva_Gray_bin_rotacao, None, fx=2, fy=1.3, interpolation=cv2.INTER_CUBIC)
+                cv2.imshow("Depois", Cropped_perspectiva_Gray_bin_rotacao)
+                #cv2.imwrite("./fotos/placas/AAAplaca______{}.jpg".format(numero_imagem), Cropped_perspectiva_Gray_rotacao_bin)
+                #cv2.moveWindow("Antes", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) - 51)
+                #cv2.moveWindow("Depois", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) +55+((Cropped_perspectiva_Gray_rotacao_bin.shape)[0]))
                 cv2.waitKey(1)
 
                 try:
-                    text = pyt.image_to_string(Cropped_perspectiva_Gray_rotacao_bin, lang='eng', config=' --psm 13 ')
+                    text = pyt.image_to_string(Cropped_perspectiva_Gray_bin_rotacao, lang='eng', config=' --psm 13 ')
                     #text1 = pyt.image_to_string(Cropped_perspectiva_Gray_rotacao_bin, lang='fefont', config=' --psm 13')
                     #text = text.replace(')', '')
                     #text = text.replace(',', '')
