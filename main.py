@@ -199,7 +199,7 @@ if __name__ == '__main__':
                 #cv2.imshow("Antes", cv2.resize(Cropped_perspectiva, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC))
                 Cropped_perspectiva_Gray_bin_rotacao = cv2.resize(Cropped_perspectiva_Gray_bin_rotacao, None, fx=2, fy=1.3, interpolation=cv2.INTER_CUBIC)
                 cv2.imshow("Depois", Cropped_perspectiva_Gray_bin_rotacao)
-                #cv2.imwrite("./fotos/placas/AAAplaca______{}.jpg".format(numero_imagem), Cropped_perspectiva_Gray_rotacao_bin)
+                cv2.imwrite("./fotos/placas/AAplaca______{}.jpg".format(numero_imagem), Cropped_perspectiva_Gray_bin_rotacao)
                 #cv2.moveWindow("Antes", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) - 51)
                 #cv2.moveWindow("Depois", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) +55+((Cropped_perspectiva_Gray_rotacao_bin.shape)[0]))
                 cv2.waitKey(1)
