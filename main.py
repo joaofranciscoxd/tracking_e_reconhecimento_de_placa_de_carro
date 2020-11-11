@@ -1,3 +1,4 @@
+from string import ascii_uppercase,digits
 import pytesseract as pyt
 import cv2
 import numpy as np
@@ -69,12 +70,12 @@ def captura_coordenadas():
 def cria_trackbars():
     cv2.namedWindow("Trackbars")
     cv2.namedWindow("Trackbars1")
-    cv2.moveWindow("Trackbars", 70, 0)
-    cv2.moveWindow("Trackbars1", 320, 0)
+    #cv2.moveWindow("Trackbars", 70, 0)
+    #cv2.moveWindow("Trackbars1", 320, 0)
     cv2.createTrackbar("x_begin", "Trackbars", 76, 1366 + 1440, nothing)
     cv2.createTrackbar("y_begin", "Trackbars", 155, 768 + 900, nothing)
     cv2.createTrackbar("x_end", "Trackbars", 1295, 1366 + 1440, nothing)
-    cv2.createTrackbar("y_end", "Trackbars", 704, 768 + 900, nothing)
+    cv2.createTrackbar("y_end", "Trackbars", 671, 768 + 900, nothing)
     cv2.createTrackbar("x_b_captura", "Trackbars1", 735, 1366 + 1440, nothing)
     cv2.createTrackbar("y_b_captura", "Trackbars1", 253, 768 + 900, nothing)
     cv2.createTrackbar("x_e_captura", "Trackbars1", 135, 1366 + 1440, nothing)
@@ -93,7 +94,7 @@ def cria_trackbars():
     '''
     cv2.createTrackbar("L-H", "TrackbarsHSV", 0, 180, nothing)
     cv2.createTrackbar("L-S", "TrackbarsHSV", 0, 255, nothing)
-    cv2.createTrackbar("L-V", "TrackbarsHSV", 78, 255, nothing)
+    cv2.createTrackbar("L-V", "TrackbarsHSV", 98, 255, nothing)
     cv2.createTrackbar("U-H", "TrackbarsHSV", 180, 180, nothing)
     cv2.createTrackbar("U-S", "TrackbarsHSV", 255, 255, nothing)
     cv2.createTrackbar("U-V", "TrackbarsHSV", 130, 255, nothing)
@@ -140,7 +141,7 @@ if __name__ == '__main__':
         key = cv2.waitKey(1)
         if (frameCount == 1 and count > 1000 and start ==True):
             print('Movimento!')
-            cv2.imwrite("./fotos/savedImage_{}.jpg".format(numero_imagem), oficial_frame)
+            cv2.imwrite("./fotos/novos_psavedImage_{}.jpg".format(numero_imagem), oficial_frame)
             numero_imagem = numero_imagem+1
             try:
                 image, x, y, w, h, sem_placa = objectDetector(oficial_frame)
@@ -188,18 +189,19 @@ if __name__ == '__main__':
 
                 (thresh, Cropped_perspectiva_Gray_bin) = cv2.threshold(Cropped_perspectiva_Gray, 55, 255, cv2.THRESH_BINARY)
                 Cropped_perspectiva_Gray_bin = Cropped_perspectiva_Gray_bin[
-                                                       21:Cropped_perspectiva_Gray_bin.shape[0] ,
-                                                       8:Cropped_perspectiva_Gray_bin.shape[1] ]
-                Cropped_perspectiva_Gray_bin_rotacao = rotate_image(Cropped_perspectiva_Gray_bin, 3)
+                                                       40:Cropped_perspectiva_Gray_bin.shape[0] -23,
+                                                       16:Cropped_perspectiva_Gray_bin.shape[1] -17 ]
+                Cropped_perspectiva_Gray_bin_rotacao = rotate_image(Cropped_perspectiva_Gray_bin, -3)
                 #kernel = np.ones((4, 4), np.uint8)
                 #result = cv2.erode(result, kernel, iterations=1)
                 #result = cv2.morphologyEx(result, cv2.MORPH_CLOSE, kernel=kernel)
                 #result = ~result
                 #result = cv2.morphologyEx(result,cv2.MORPH_OPEN,kernel=kernel)
                 #cv2.imshow("Antes", cv2.resize(Cropped_perspectiva, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC))
-                Cropped_perspectiva_Gray_bin_rotacao = cv2.resize(Cropped_perspectiva_Gray_bin_rotacao, None, fx=2, fy=1.3, interpolation=cv2.INTER_CUBIC)
+                Cropped_perspectiva_Gray_bin_rotacao = cv2.resize(Cropped_perspectiva_Gray_bin_rotacao, None, fx=2, fy=1.5, interpolation=cv2.INTER_CUBIC)
                 cv2.imshow("Depois", Cropped_perspectiva_Gray_bin_rotacao)
-                cv2.imwrite("./fotos/placas/AAplaca______{}.jpg".format(numero_imagem), Cropped_perspectiva_Gray_bin_rotacao)
+                #cv2.imshow("mask", mask)
+                cv2.imwrite("./fotos/placas02/placa{}.jpg".format(numero_imagem), Cropped_perspectiva_Gray_bin_rotacao)
                 #cv2.moveWindow("Antes", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) - 51)
                 #cv2.moveWindow("Depois", 1367 + ((oficial_frame.shape)[1]) + 85-300, ((oficial_frame.shape)[0]) +55+((Cropped_perspectiva_Gray_rotacao_bin.shape)[0]))
                 cv2.waitKey(1)
@@ -212,7 +214,20 @@ if __name__ == '__main__':
                     #text = text.replace("'", '')
                     #text = text.replace(" ", '')
                     # text = pyt.image_to_string(result, lang='eng',config=' --psm 13 --oem 3 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+                    novo_texto = list()
+                    text = text.upper()
+                    caracteres = digits + ascii_uppercase
+                    for letra in text:
+                        if letra in (caracteres):
+                            novo_texto.append(letra)
                     print("PLACA1:" + text)
+                    novo_texto = str(novo_texto)
+                    novo_texto = novo_texto.replace(',','')
+                    novo_texto = novo_texto.replace('[','')
+                    novo_texto = novo_texto.replace(']','')
+                    novo_texto = novo_texto.replace("'",'')
+                    novo_texto = novo_texto.replace(" ",'')
+                    print("PLACA_LIMPA:" , novo_texto)
                     #print("PLACA2:" + text1)
 
                 except  Exception as e:
